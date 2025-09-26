@@ -7,13 +7,12 @@
 import { expect } from "chai";
 import { OAuth2Client } from "google-auth-library";
 import * as sinon from "sinon";
-import vscode from "vscode";
 import { CONFIG } from "../../colab-config";
 import { PackageInfo } from "../../config/package-info";
 import { ExtensionUriHandler } from "../../system/uri-handler";
 import { authUriMatch } from "../../test/helpers/authentication";
 import { TestCancellationTokenSource } from "../../test/helpers/cancellation";
-import { TestUri } from "../../test/helpers/uri";
+import { matchUri, TestUri } from "../../test/helpers/uri";
 import { newVsCodeStub, VsCodeStub } from "../../test/helpers/vscode";
 import { FlowResult, OAuth2TriggerOptions } from "./flows";
 import { ProxiedRedirectFlow } from "./proxied";
@@ -100,7 +99,3 @@ describe("ProxiedRedirectFlow", () => {
     );
   });
 });
-
-function matchUri(regExp: RegExp) {
-  return sinon.match((uri: vscode.Uri) => regExp.test(uri.toString()));
-}
