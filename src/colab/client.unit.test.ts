@@ -13,7 +13,6 @@ import { ColabAssignedServer } from "../jupyter/servers";
 import { TestUri } from "../test/helpers/uri";
 import { uuidToWebSafeBase64 } from "../utils/uuid";
 import {
-  CcuInfo,
   Assignment,
   Shape,
   SubscriptionState,
@@ -154,7 +153,7 @@ describe("ColabClient", () => {
         remainingTokens: Number(mockResponse.freeCcuQuotaInfo.remainingTokens),
       },
     };
-    await expect(client.getCcuInfo()).to.eventually.deep.equal(
+    await expect(client.getUserInfo()).to.eventually.deep.equal(
       expectedResponse,
     );
 
@@ -653,7 +652,7 @@ describe("ColabClient", () => {
       )
       .resolves(new Response(JSON.stringify(mockResponse), { status: 200 }));
 
-    await expect(client.getCcuInfo()).to.eventually.deep.equal(mockResponse);
+    await expect(client.getUserInfo()).to.eventually.deep.equal(mockResponse);
 
     sinon.assert.calledOnce(fetchStub);
   });
@@ -674,7 +673,7 @@ describe("ColabClient", () => {
         }),
       );
 
-    await expect(client.getCcuInfo()).to.eventually.be.rejectedWith(
+    await expect(client.getUserInfo()).to.eventually.be.rejectedWith(
       /Foo error/,
     );
   });
@@ -690,7 +689,7 @@ describe("ColabClient", () => {
       )
       .resolves(new Response(withXSSI("not JSON eh?"), { status: 200 }));
 
-    await expect(client.getCcuInfo()).to.eventually.be.rejectedWith(
+    await expect(client.getUserInfo()).to.eventually.be.rejectedWith(
       /not JSON.+eh\?/,
     );
   });
@@ -713,7 +712,7 @@ describe("ColabClient", () => {
         new Response(withXSSI(JSON.stringify(mockResponse)), { status: 200 }),
       );
 
-    await expect(client.getCcuInfo()).to.eventually.be.rejectedWith(
+    await expect(client.getUserInfo()).to.eventually.be.rejectedWith(
       /assignmentsCount.+received undefined/s,
     );
   });

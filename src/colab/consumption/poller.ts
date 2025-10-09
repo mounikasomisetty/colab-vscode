@@ -11,7 +11,6 @@ import {
   StartMode,
 } from "../../common/task-runner";
 import { Toggleable } from "../../common/toggleable";
-import { CcuInfo } from "../api";
 import { ColabClient } from "../client";
 
 const POLL_INTERVAL_MS = 1000 * 60 * 5; // 5 minutes.
@@ -76,7 +75,7 @@ export class ConsumptionPoller implements Toggleable, Disposable {
    * Checks the latests CCU info and emits an event when there is a change.
    */
   private async poll(signal?: AbortSignal): Promise<void> {
-    const ccuInfo = await this.client.getCcuInfo(signal);
+    const ccuInfo = await this.client.getUserInfo(signal);
     if (JSON.stringify(ccuInfo) === JSON.stringify(this.ccuInfo)) {
       return;
     }

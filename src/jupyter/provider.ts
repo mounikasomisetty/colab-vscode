@@ -85,13 +85,18 @@ export class ColabJupyterServerProvider
    * can be used.
    */
   @traceMethod
-  provideJupyterServers(
+  async provideJupyterServers(
     _token: CancellationToken,
-  ): ProviderResult<JupyterServer[]> {
+  ): Promise<JupyterServer[]> {
     if (!this.isAuthorized) {
       return [];
     }
-    return this.assignmentManager.getAssignedServers();
+    console.log(`!@# Getting assigned servers...`);
+    const startTime = Date.now();
+    const res = await this.assignmentManager.getAssignedServers();
+    const durationMs = Date.now() - startTime;
+    console.log(`!@# Getting assigned servers took ${durationMs.toString()}ms`);
+    return res;
   }
 
   /**

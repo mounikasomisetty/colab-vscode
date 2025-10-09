@@ -5,7 +5,7 @@
  */
 
 import vscode from "vscode";
-import { CcuInfo, SubscriptionTier } from "../api";
+import { SubscriptionTier } from "../api";
 import { ColabClient } from "../client";
 import { openColabSignup } from "../commands/external";
 

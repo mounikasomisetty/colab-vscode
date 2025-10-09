@@ -101,8 +101,7 @@ export class AssignmentManager implements vscode.Disposable {
   async getAvailableServerDescriptors(
     signal?: AbortSignal,
   ): Promise<ColabServerDescriptor[]> {
-    const ccuInfo = await this.client.getCcuInfo(signal);
-
+    const ccuInfo = await this.client.getUserInfo(signal);
     const eligibleGpus = new Set(ccuInfo.eligibleGpus);
     const gpus: ColabServerDescriptor[] = Array.from(eligibleGpus).map((e) => ({
       label: `Colab GPU ${e}`,

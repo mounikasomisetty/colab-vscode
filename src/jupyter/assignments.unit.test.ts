@@ -143,7 +143,7 @@ describe("AssignmentManager", () => {
 
   describe("getAvailableServerDescriptors", () => {
     it("returns the default CPU and the eligible servers", async () => {
-      colabClientStub.getCcuInfo.resolves({
+      colabClientStub.getUserInfo.resolves({
         currentBalance: 1,
         consumptionRateHourly: 2,
         assignmentsCount: 0,

@@ -12,7 +12,6 @@ import {
   createStubInstance,
 } from "sinon";
 import { newVsCodeStub, VsCodeStub } from "../../test/helpers/vscode";
-import { CcuInfo } from "../api";
 import { ColabClient } from "../client";
 import { ConsumptionPoller } from "./poller";
 
@@ -54,7 +53,7 @@ describe("ConsumptionPoller", () => {
 
   describe("lifecycle", () => {
     beforeEach(() => {
-      clientStub.getCcuInfo.resolves(DEFAULT_CCU_INFO);
+      clientStub.getUserInfo.resolves(DEFAULT_CCU_INFO);
     });
 
     afterEach(() => {
@@ -62,12 +61,12 @@ describe("ConsumptionPoller", () => {
     });
 
     it("disposes the runner", async () => {
-      clientStub.getCcuInfo.resetHistory();
+      clientStub.getUserInfo.resetHistory();
 
       poller.dispose();
 
       await fakeClock.tickAsync(POLL_INTERVAL_MS);
-      sinon.assert.notCalled(clientStub.getCcuInfo);
+      sinon.assert.notCalled(clientStub.getUserInfo);
     });
 
     it("throws when used after being disposed", () => {
@@ -82,8 +81,8 @@ describe("ConsumptionPoller", () => {
     });
 
     it("aborts slow calls to get CCU info", async () => {
-      clientStub.getCcuInfo.resetHistory();
-      clientStub.getCcuInfo.onFirstCall().callsFake(
+      clientStub.getUserInfo.resetHistory();
+      clientStub.getUserInfo.onFirstCall().callsFake(
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         async () => new Promise(() => {}),
       );
@@ -91,19 +90,19 @@ describe("ConsumptionPoller", () => {
 
       await fakeClock.tickAsync(TASK_TIMEOUT_MS + 1);
 
-      sinon.assert.calledOnce(clientStub.getCcuInfo);
-      expect(clientStub.getCcuInfo.firstCall.args[0]?.aborted).to.be.true;
+      sinon.assert.calledOnce(clientStub.getUserInfo);
+      expect(clientStub.getUserInfo.firstCall.args[0]?.aborted).to.be.true;
     });
   });
 
   describe("toggled on", () => {
     beforeEach(async () => {
-      clientStub.getCcuInfo.resolves(DEFAULT_CCU_INFO);
+      clientStub.getUserInfo.resolves(DEFAULT_CCU_INFO);
       poller.on();
       // Turning the poller on runs the task immediately. Wait past the task
       // timeout to ensure the immediate invocation runs to completion.
       await fakeClock.tickAsync(TASK_TIMEOUT_MS);
-      clientStub.getCcuInfo.resetHistory();
+      clientStub.getUserInfo.resetHistory();
     });
 
     describe("when the CCU info does not change", () => {
@@ -117,7 +116,7 @@ describe("ConsumptionPoller", () => {
       it("does not emit an event", async () => {
         await fakeClock.tickAsync(POLL_INTERVAL_MS);
 
-        sinon.assert.calledOnce(clientStub.getCcuInfo);
+        sinon.assert.calledOnce(clientStub.getUserInfo);
         sinon.assert.notCalled(onDidChangeCcuInfo);
       });
     });
@@ -133,13 +132,13 @@ describe("ConsumptionPoller", () => {
       beforeEach(() => {
         onDidChangeCcuInfo = sinon.stub();
         poller.onDidChangeCcuInfo(onDidChangeCcuInfo);
-        clientStub.getCcuInfo.resolves(newCcuInfo);
+        clientStub.getUserInfo.resolves(newCcuInfo);
       });
 
       it("emits an event", async () => {
         await fakeClock.tickAsync(POLL_INTERVAL_MS);
 
-        sinon.assert.calledOnce(clientStub.getCcuInfo);
+        sinon.assert.calledOnce(clientStub.getUserInfo);
         sinon.assert.calledOnce(onDidChangeCcuInfo);
       });
     });
@@ -150,17 +149,17 @@ describe("ConsumptionPoller", () => {
     poller.onDidChangeCcuInfo(onDidChangeCcuInfo);
 
     // On for 3.
-    clientStub.getCcuInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 3 });
+    clientStub.getUserInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 3 });
     poller.on();
     await fakeClock.tickAsync(POLL_INTERVAL_MS);
 
     // Off for 2.
-    clientStub.getCcuInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 2 });
+    clientStub.getUserInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 2 });
     poller.off();
     await fakeClock.tickAsync(POLL_INTERVAL_MS);
 
     // On for 1.
-    clientStub.getCcuInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 1 });
+    clientStub.getUserInfo.resolves({ ...DEFAULT_CCU_INFO, currentBalance: 1 });
     poller.on();
     await fakeClock.tickAsync(POLL_INTERVAL_MS);
 

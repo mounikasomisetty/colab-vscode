@@ -13,10 +13,8 @@ import { ColabAssignedServer } from "../jupyter/servers";
 import { uuidToWebSafeBase64 } from "../utils/uuid";
 import {
   Assignment,
-  CcuInfo,
   Variant,
   GetAssignmentResponse,
-  CcuInfoSchema,
   AssignmentSchema,
   GetAssignmentResponseSchema,
   KernelSchema,
@@ -32,6 +30,8 @@ import {
   ListedAssignment,
   RuntimeProxyInfo,
   RuntimeProxyInfoSchema,
+  ConsumptionUserInfo,
+  ConsumptionUserInfoSchema,
 } from "./api";
 import {
   ACCEPT_JSON_HEADER,
@@ -74,7 +74,7 @@ export class ColabClient {
   }
 
   /**
-   * Gets the user's subscription tier.
+   * Gets the user's current subscription tier.
    *
    * @param signal - Optional {@link AbortSignal} to cancel the request.
    * @returns The user's subscription tier.
@@ -82,24 +82,37 @@ export class ColabClient {
   async getSubscriptionTier(signal?: AbortSignal): Promise<SubscriptionTier> {
     const userInfo = await this.issueRequest(
       new URL("v1/user-info", this.colabGapiDomain),
-      { method: "GET", signal },
+      {
+        method: "POST",
+        body: JSON.stringify({ get_ccu_consumption_info: true }),
+        headers: { "Content-Type": "application/json" },
+        signal,
+      },
       UserInfoSchema,
     );
     return userInfo.subscriptionTier;
   }
 
   /**
-   * Gets the current Colab Compute Units (CCU) information.
+   * Gets the current user information.
    *
    * @param signal - Optional {@link AbortSignal} to cancel the request.
-   * @returns The current CCU information.
+   * @returns The current user information.
    */
-  async getCcuInfo(signal?: AbortSignal): Promise<CcuInfo> {
-    return this.issueRequest(
-      new URL(`${TUN_ENDPOINT}/ccu-info`, this.colabDomain),
-      { method: "GET", signal },
-      CcuInfoSchema,
+  async getUserInfo(signal?: AbortSignal): Promise<ConsumptionUserInfo> {
+    const url = new URL("v1/user-info", this.colabGapiDomain);
+    url.searchParams.append("get_ccu_consumption_info", "true");
+    const userInfo = await this.issueRequest(
+      url,
+      {
+        method: "POST",
+        body: JSON.stringify({ get_ccu_consumption_info: true }),
+        headers: { "Content-Type": "application/json" },
+        signal,
+      },
+      ConsumptionUserInfoSchema,
     );
+    return userInfo;
   }
 
   /**
