@@ -25,6 +25,23 @@ Guidelines](https://opensource.google/conduct/).
 
 ## Contribution process
 
+### Local Development
+
+#### Configure your environment
+
+Make a copy of the environment template: `cp .env.template .env`
+
+Set the extension environment: `COLAB_EXTENSION_ENVIRONMENT="production"`
+
+Create an OAuth client ID and secret ([instructions](https://developers.google.com/identity/protocols/oauth2)) and set the values:
+
+```
+COLAB_EXTENSION_CLIENT_ID=<TODO>
+COLAB_EXTENSION_CLIENT_NOT_SO_SECRET=<TODO>
+```
+
+Then, execute `npm run generate:config`, which generates the static config file needed to run the extension.
+
 ### Code Reviews
 
 All submissions, including submissions by project members, require review. We
