@@ -43,10 +43,10 @@
     "configuration": {
       "title": "Colab",
       "properties": {
-        "colab.codeDiagnostics.LSP": {
+        "colab.codeDiagnostics": {
           "type": "boolean",
           "default": false,
-          "description": "Enable language server protocol (LSP) features when connected to a Colab server."
+          "description": "Enable code diagnostics powered by a connected Colab server."
         },
         "colab.logging.level": {
           "type": "string",
