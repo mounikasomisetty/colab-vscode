@@ -47,7 +47,7 @@ export class LanguageClientController extends AsyncToggleable<Disposable> {
     signal.onabort = (e) => {
       this.abortController.abort(e);
     };
-    const unlisten = this.assignments.onDidAssignmentsChange(async (e) => {
+    const listenDispose = this.assignments.onDidAssignmentsChange(async (e) => {
       if (
         e.added.length ||
         e.removed.some((s) => {
@@ -68,7 +68,7 @@ export class LanguageClientController extends AsyncToggleable<Disposable> {
     await this.connectToLatest(this.abortController.signal);
     return {
       dispose: () => {
-        unlisten.dispose();
+        listenDispose.dispose();
         this.tearDownClient("Toggled off");
       },
     };
