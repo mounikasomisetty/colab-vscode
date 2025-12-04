@@ -30,7 +30,7 @@ export class ServerPicker {
   constructor(
     private readonly vs: typeof vscode,
     private readonly assignments: AssignmentManager,
-  ) {}
+  ) { }
 
   /**
    * Prompt the user through a multi-step series of inputs to pick a Colab
