@@ -25,7 +25,7 @@ export class ServerPicker {
   constructor(
     private readonly vs: typeof vscode,
     private readonly assignments: AssignmentManager,
-  ) {}
+  ) { }
 
   /**
    * Prompt the user through a multi-step series of inputs to pick a Colab
@@ -48,7 +48,8 @@ export class ServerPicker {
       variantToAccelerators.set(server.variant, accelerators);
 
 
-      const shapes = acceleratorsToShapes.get(serverAccelerator) ?? new Set();
+      const shapes =
+        acceleratorsToShapes.get(serverAccelerator) ?? new Set();
       shapes.add(server.shape ?? Shape.STANDARD);
       acceleratorsToShapes.set(serverAccelerator, shapes);
     }
@@ -58,7 +59,8 @@ export class ServerPicker {
 
     const state: Partial<Server> = {};
     await MultiStepInput.run(this.vs, (input) =>
-      this.promptForVariant(input, state, variantToAccelerators, acceleratorsToShapes),
+      this.promptForVariant(input, state, variantToAccelerators,
+        acceleratorsToShapes),
     );
     if (
       state.variant === undefined ||
@@ -105,10 +107,12 @@ export class ServerPicker {
     // Skip prompting for an accelerator for the default variant (CPU).
     if (state.variant === Variant.DEFAULT) {
       state.accelerator = "NONE";
-      return (input: MultiStepInput) => this.promptForMachineShape(input, state, shapesByAccelerators);
+      return (input: MultiStepInput) =>
+        this.promptForMachineShape(input, state, shapesByAccelerators);
     }
     return (input: MultiStepInput) =>
-      this.promptForAccelerator(input, state, acceleratorsByVariant, shapesByAccelerators);
+      this.promptForAccelerator(input, state, acceleratorsByVariant,
+        shapesByAccelerators);
   }
 
   private async promptForAccelerator(
@@ -139,7 +143,8 @@ export class ServerPicker {
       return;
     }
 
-    return (input: MultiStepInput) => this.promptForMachineShape(input, state, shapesByAccelerators);
+    return (input: MultiStepInput) =>
+      this.promptForMachineShape(input, state, shapesByAccelerators);
   }
 
   private async promptForMachineShape(

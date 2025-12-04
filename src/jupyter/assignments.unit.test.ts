@@ -198,7 +198,9 @@ describe("AssignmentManager", () => {
     it("returns the default CPU and the eligible servers for pro users", async () => {
       colabClientStub.getCcuInfo.resolves(mockCcuInfo);
 
-      const servers = await assignmentManager.getAvailableServerDescriptors(SubscriptionTier.PRO);
+      const tier = SubscriptionTier.PRO;
+      const servers = 
+        await assignmentManager.getAvailableServerDescriptors(tier);
 
       expect(servers).to.deep.equal([
         { ...DEFAULT_CPU_SERVER, shape: Shape.STANDARD },
