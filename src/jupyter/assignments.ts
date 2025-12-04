@@ -132,7 +132,7 @@ export class AssignmentManager implements vscode.Disposable {
     }
 
     const proDescriptors = [];
-    for (let descriptor of defaultDescriptors) {
+    for (const descriptor of defaultDescriptors) {
       if (!isHighMemOnlyAccelerator(descriptor.accelerator)) {
         proDescriptors.push({ ...descriptor, shape: Shape.STANDARD })
       }

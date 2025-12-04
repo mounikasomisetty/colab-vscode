@@ -233,7 +233,7 @@ describe("ColabClient", () => {
         [Variant.TPU, "V6E1", Shape.HIGHMEM],
       ];
       for (const [variant, accelerator, shape] of assignmentTests) {
-        const assignment = `${variant}${accelerator ? ` (${accelerator})` : ""} with shape ${shape ? shape : Shape.STANDARD}`;
+        const assignment = `${variant}${accelerator ? ` (${accelerator})` : ""} with shape ${String(shape ?? Shape.STANDARD)}`;
 
         it(`creates a new ${assignment}`, async () => {
           const postQueryParams: Record<string, string | RegExp> = {

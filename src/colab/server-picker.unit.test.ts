@@ -379,7 +379,8 @@ describe("ServerPicker", () => {
       expect(secondShapeQuickPickStub.activeItems).to.be.deep.equal([
         { value: Shape.STANDARD, label: "Standard" },
       ]);
-      const secondAcceleratorPickerShown = secondAcceleratorQuickPickStub.nextShow();
+      const secondAcceleratorPickerShown =
+        secondAcceleratorQuickPickStub.nextShow();
       secondShapeQuickPickStub.onDidTriggerButton.yield(
         vsCodeStub.QuickInputButtons.Back,
       );

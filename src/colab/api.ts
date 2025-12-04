@@ -407,7 +407,7 @@ export function shapeToMachineShape(shape: Shape): string {
   }
 }
 
-const HIGHMEM_ONLY_ACCELERATORS: Set<string> = new Set([
+const HIGHMEM_ONLY_ACCELERATORS: Set<string> = new Set<string>([
   'L4',
   'V28',
   'V5E1',
