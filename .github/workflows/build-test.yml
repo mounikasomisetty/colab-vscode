@@ -17,8 +17,42 @@
 name: Build and Test
 
 on:
+  # Triggered by other workflows (PRs)
   workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+      run_e2e:
+        required: false
+        type: boolean
+        default: false
+      environment_name:
+        required: false
+        type: string
+        default: "E2E Tests (Protected)"
+
+  # Triggered manually via GitHub UI (for debugging)
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "The git ref to checkout (branch, tag, or SHA)"
+        required: false
+        default: "main"
+        type: string
+      run_e2e:
+        description: "Run E2E tests?"
+        required: true
+        type: boolean
+        default: true
+      environment_name:
+        description: "Environment to use"
+        required: true
+        type: choice # Provides a dropdown in the UI
+        options: 
+         - "E2E Tests (Trusted)"   # Default for debugging (skips approval)
+         - "E2E Tests (Protected)"
+        default: "E2E Tests (Trusted)"
 
 permissions:
   contents: read
@@ -36,6 +70,8 @@ jobs:
       actions: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -61,6 +97,8 @@ jobs:
     needs: generateConfig
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -87,6 +125,8 @@ jobs:
     needs: generateConfig
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -111,6 +151,8 @@ jobs:
     needs: generateConfig
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -131,12 +173,12 @@ jobs:
 
   e2eTests:
     name: VS Code E2E Tests
+    # Only run if specifically requested via input
+    if: ${{ inputs.run_e2e }}
     permissions:
       actions: write
-    # This environment is protected and requires approval for PRs from forks.
-    # It provides the necessary variables and secrets to run the end-to-end
-    # tests.
-    environment: E2E Tests
+    # Dynamically select the environment (Trusted vs Protected)
+    environment: ${{ inputs.environment_name }}
     strategy:
       matrix:
         # macos-latest and windows-latest can be added as we work towards a release.
@@ -154,6 +196,8 @@ jobs:
       COLAB_EXTENSION_CLIENT_NOT_SO_SECRET: ${{ secrets.COLAB_EXTENSION_CLIENT_NOT_SO_SECRET }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
