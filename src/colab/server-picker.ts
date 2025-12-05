@@ -102,7 +102,7 @@ export class ServerPicker {
     const pick = await input.showQuickPick({
       title: "Select a variant",
       step: 1,
-      totalSteps: 2,
+      totalSteps: 3,
       items,
       activeItem: items.find((item) => item.value === state.variant),
       buttons: [input.vs.QuickInputButtons.Back],
@@ -154,7 +154,7 @@ export class ServerPicker {
       title: "Select an accelerator",
       step: 2,
       // Since we have to pick an accelerator, we've added a step.
-      totalSteps: 3,
+      totalSteps: 4,
       items,
       activeItem: items.find((item) => item.value === state.accelerator),
       buttons: [input.vs.QuickInputButtons.Back],
